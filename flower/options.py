@@ -62,7 +62,7 @@ define("format_task", type=types.FunctionType, default=None,
 define("natural_time", type=bool, default=False,
        help="show time in relative format")
 define("tasks_columns", type=str,
-       default="name,uuid,state,args,kwargs,result,received,started,runtime,worker",
+       default="name,uuid,state,tenant,args,kwargs,result,received,started,runtime,worker",
        help="slugs of columns on /tasks/ page, delimited by comma")
 define("auth_provider", default=None, type=str, help="auth handler class")
 define("url_prefix", type=str, help="base url prefix")
