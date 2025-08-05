@@ -7,28 +7,42 @@ from .search import parse_search_terms, satisfies_search_terms
 def extract_tenant_from_headers(task):
     """
     Extract tenant information from task headers.
-    Looks for _schema value in the headers.
+    Looks for _schema_name value in the headers (compatible with tenant-schemas-celery).
     """
     try:
         # Check if task has headers attribute
         if hasattr(task, 'headers') and task.headers:
-            return task.headers.get('_schema', '')
+            result = task.headers.get('_schema_name', '')
+            if result:
+                return result
         
         # Check if task has request attribute with headers
         if hasattr(task, 'request') and hasattr(task.request, 'headers'):
-            return task.request.headers.get('_schema', '')
+            result = task.request.headers.get('_schema_name', '')
+            if result:
+                return result
+        
+        # Check if task has request attribute with _schema_name directly
+        if hasattr(task, 'request') and hasattr(task.request, 'get'):
+            result = task.request.get('_schema_name', '')
+            if result:
+                return result
         
         # Check if task has kwargs that might contain headers
         if hasattr(task, 'kwargs') and task.kwargs:
             if isinstance(task.kwargs, dict):
-                return task.kwargs.get('_schema', '')
+                result = task.kwargs.get('_schema_name', '')
+                if result:
+                    return result
             elif isinstance(task.kwargs, str):
-                # Try to parse kwargs string for _schema
+                # Try to parse kwargs string for _schema_name
                 import ast
                 try:
                     kwargs_dict = ast.literal_eval(task.kwargs)
                     if isinstance(kwargs_dict, dict):
-                        return kwargs_dict.get('_schema', '')
+                        result = kwargs_dict.get('_schema_name', '')
+                        if result:
+                            return result
                 except (ValueError, SyntaxError):
                     pass
         
