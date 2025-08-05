@@ -4,6 +4,53 @@ import time
 from .search import parse_search_terms, satisfies_search_terms
 
 
+def extract_tenant_from_headers(task):
+    """
+    Extract tenant information from task headers.
+    Looks for _schema_name value in the headers (compatible with tenant-schemas-celery).
+    """
+    try:
+        # Check if task has headers attribute
+        if hasattr(task, 'headers') and task.headers:
+            result = task.headers.get('_schema_name', '')
+            if result:
+                return result
+        
+        # Check if task has request attribute with headers
+        if hasattr(task, 'request') and hasattr(task.request, 'headers'):
+            result = task.request.headers.get('_schema_name', '')
+            if result:
+                return result
+        
+        # Check if task has request attribute with _schema_name directly
+        if hasattr(task, 'request') and hasattr(task.request, 'get'):
+            result = task.request.get('_schema_name', '')
+            if result:
+                return result
+        
+        # Check if task has kwargs that might contain headers
+        if hasattr(task, 'kwargs') and task.kwargs:
+            if isinstance(task.kwargs, dict):
+                result = task.kwargs.get('_schema_name', '')
+                if result:
+                    return result
+            elif isinstance(task.kwargs, str):
+                # Try to parse kwargs string for _schema_name
+                import ast
+                try:
+                    kwargs_dict = ast.literal_eval(task.kwargs)
+                    if isinstance(kwargs_dict, dict):
+                        result = kwargs_dict.get('_schema_name', '')
+                        if result:
+                            return result
+                except (ValueError, SyntaxError):
+                    pass
+        
+        return ''
+    except Exception:
+        return ''
+
+
 # pylint: disable=too-many-branches,too-many-locals,too-many-arguments
 def iter_tasks(events, limit=None, offset=0, type=None, worker=None, state=None,
                sort_by=None, received_start=None, received_end=None,
@@ -47,7 +94,7 @@ def iter_tasks(events, limit=None, offset=0, type=None, worker=None, state=None,
                 break
 
 
-sort_keys = {'name': str, 'state': str, 'received': float, 'started': float}
+sort_keys = {'name': str, 'state': str, 'tenant': str, 'received': float, 'started': float}
 
 
 def sort_tasks(tasks, sort_by):
@@ -67,4 +114,7 @@ def get_task_by_id(events, task_id):
 
 
 def as_dict(task):
-    return task.as_dict()
+    task_dict = task.as_dict()
+    # Add tenant information extracted from headers
+    task_dict['tenant'] = extract_tenant_from_headers(task)
+    return task_dict

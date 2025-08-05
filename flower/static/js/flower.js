@@ -595,24 +595,31 @@ var flower = (function () {
                 }
             }, {
                 targets: 3,
+                data: 'tenant',
+                visible: isColumnVisible('tenant'),
+                render: function (data, type, full, meta) {
+                    return data || '';
+                }
+            }, {
+                targets: 4,
                 data: 'args',
                 className: "text-nowrap overflow-auto",
                 visible: isColumnVisible('args'),
                 render: htmlEscapeEntities
             }, {
-                targets: 4,
+                targets: 5,
                 data: 'kwargs',
                 className: "text-nowrap overflow-auto",
                 visible: isColumnVisible('kwargs'),
                 render: htmlEscapeEntities
             }, {
-                targets: 5,
+                targets: 6,
                 data: 'result',
                 visible: isColumnVisible('result'),
                 className: "text-nowrap overflow-auto",
                 render: htmlEscapeEntities
             }, {
-                targets: 6,
+                targets: 7,
                 data: 'received',
                 className: "text-nowrap",
                 visible: isColumnVisible('received'),
@@ -623,7 +630,7 @@ var flower = (function () {
                     return data;
                 }
             }, {
-                targets: 7,
+                targets: 8,
                 data: 'started',
                 className: "text-nowrap",
                 visible: isColumnVisible('started'),
@@ -634,7 +641,7 @@ var flower = (function () {
                     return data;
                 }
             }, {
-                targets: 8,
+                targets: 9,
                 data: 'runtime',
                 className: "text-center",
                 visible: isColumnVisible('runtime'),
@@ -642,27 +649,27 @@ var flower = (function () {
                     return data ? data.toFixed(2) : data;
                 }
             }, {
-                targets: 9,
+                targets: 10,
                 data: 'worker',
                 visible: isColumnVisible('worker'),
                 render: function (data, type, full, meta) {
                     return '<a href="' + url_prefix() + '/worker/' + encodeURIComponent(data) + '">' + data + '</a>';
                 }
             }, {
-                targets: 10,
+                targets: 11,
                 data: 'exchange',
                 visible: isColumnVisible('exchange')
             }, {
-                targets: 11,
+                targets: 12,
                 data: 'routing_key',
                 visible: isColumnVisible('routing_key')
             }, {
-                targets: 12,
+                targets: 13,
                 data: 'retries',
                 className: "text-center",
                 visible: isColumnVisible('retries')
             }, {
-                targets: 13,
+                targets: 14,
                 data: 'revoked',
                 className: "text-nowrap",
                 visible: isColumnVisible('revoked'),
@@ -673,16 +680,16 @@ var flower = (function () {
                     return data;
                 }
             }, {
-                targets: 14,
+                targets: 15,
                 data: 'exception',
                 className: "text-nowrap",
                 visible: isColumnVisible('exception')
             }, {
-                targets: 15,
+                targets: 16,
                 data: 'expires',
                 visible: isColumnVisible('expires')
             }, {
-                targets: 16,
+                targets: 17,
                 data: 'eta',
                 visible: isColumnVisible('eta')
             }, ],

@@ -80,7 +80,7 @@ class TasksDataTable(BaseHandler):
 
     @classmethod
     def maybe_normalize_for_sort(cls, tasks, sort_by):
-        sort_keys = {'name': str, 'state': str, 'received': float, 'started': float, 'runtime': float}
+        sort_keys = {'name': str, 'state': str, 'tenant': str, 'received': float, 'started': float, 'runtime': float}
         if sort_by in sort_keys:
             for _, task in tasks:
                 attr_value = getattr(task, sort_by, None)
